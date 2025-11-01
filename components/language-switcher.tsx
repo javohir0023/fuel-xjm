@@ -1,14 +1,14 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import type { Language } from "@/lib/translations"
 
-interface LanguageSwitcherProps {
-  currentLanguage: Language
+export default function LanguageSwitcher({
+  language,
+  onLanguageChange,
+}: {
+  language: Language
   onLanguageChange: (lang: Language) => void
-}
-
-export function LanguageSwitcher({ currentLanguage, onLanguageChange }: LanguageSwitcherProps) {
+}) {
   const languages: { code: Language; label: string }[] = [
     { code: "en", label: "EN" },
     { code: "ru", label: "RU" },
@@ -16,17 +16,19 @@ export function LanguageSwitcher({ currentLanguage, onLanguageChange }: Language
   ]
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 bg-primary-foreground/20 rounded-lg p-1">
       {languages.map((lang) => (
-        <Button
+        <button
           key={lang.code}
           onClick={() => onLanguageChange(lang.code)}
-          variant={currentLanguage === lang.code ? "default" : "outline"}
-          size="sm"
-          className="w-12"
+          className={`px-4 py-1 rounded font-semibold transition-all ${
+            language === lang.code
+              ? "bg-primary-foreground text-primary"
+              : "text-primary-foreground hover:bg-primary-foreground/20"
+          }`}
         >
           {lang.label}
-        </Button>
+        </button>
       ))}
     </div>
   )

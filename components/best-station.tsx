@@ -1,57 +1,60 @@
-"use client"
+import { Star, MapPin, Fuel, DollarSign } from "lucide-react"
 
-import { getTranslation, type Language } from "@/lib/translations"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-
-interface Station {
-  id: number
-  name: string
-  address: string
-  fuelTypes: string[]
-  prices: Record<string, number>
-  rating: number
-  reviews: number
-  distance: number
-}
-
-interface BestStationProps {
-  station: Station
-  language: Language
-}
-
-export function BestStation({ station, language }: BestStationProps) {
-  const t = (key: any) => getTranslation(language, key)
-
+export default function BestStation({
+  station,
+  language,
+  t,
+}: {
+  station: any
+  language: string
+  t: any
+}) {
   return (
-    <Card className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-6 mb-8">
-      <div className="flex items-start justify-between">
-        <div>
-          <Badge className="mb-3 bg-white/20 text-white hover:bg-white/30">⭐ {t("best_station")}</Badge>
-          <h2 className="text-3xl font-bold mb-2">{station.name}</h2>
-          <p className="text-blue-100 mb-4">{station.address}</p>
+    <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-xl p-6 md:p-8">
+      <p className="text-sm font-semibold opacity-90 mb-2">{t.bestStation}</p>
+      <h2 className="text-3xl md:text-4xl font-bold mb-6">{station.name}</h2>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-blue-100 text-sm mb-1">{t("price_per_liter")}</p>
-              <p className="text-2xl font-bold">{station.prices["AI-95"] || station.prices["AI-92"]} so'm</p>
-            </div>
-            <div>
-              <p className="text-blue-100 text-sm mb-1">{t("rating")}</p>
-              <p className="text-2xl font-bold">
-                ⭐ {station.rating} ({station.reviews})
-              </p>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-2 mb-1">
+            <Star size={20} className="fill-current" />
+            <span className="font-semibold">{station.rating}</span>
           </div>
+          <p className="text-sm opacity-90">{t.rating}</p>
         </div>
 
-        <div className="text-right">
-          <p className="text-4xl font-bold">
-            {station.distance} {t("km")}
-          </p>
-          <p className="text-blue-100">{t("distance")}</p>
+        <div className="flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-2 mb-1">
+            <DollarSign size={20} />
+            <span className="font-semibold">{station.price.toLocaleString()}</span>
+          </div>
+          <p className="text-sm opacity-90">{t.price}</p>
+        </div>
+
+        <div className="flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-2 mb-1">
+            <MapPin size={20} />
+            <span className="font-semibold">{station.distance} km</span>
+          </div>
+          <p className="text-sm opacity-90">{t.distance}</p>
+        </div>
+
+        <div className="flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-2 mb-1">
+            <Fuel size={20} />
+            <span className="font-semibold">{station.fuelTypes.length}</span>
+          </div>
+          <p className="text-sm opacity-90">{t.available}</p>
         </div>
       </div>
-    </Card>
+
+      <div className="mt-6 flex flex-wrap gap-2">
+        {station.fuelTypes.map((fuel: string, idx: number) => (
+          <span key={idx} className="bg-primary-foreground/30 px-3 py-1 rounded-full text-sm font-medium">
+            {fuel}
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }
