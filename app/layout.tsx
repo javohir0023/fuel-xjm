@@ -10,7 +10,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Smart Fuel Finder",
   description: "Find the best gas stations near you",
-  generator: "v0.app",
+  generator: "xjm app",
 }
 
 export default function RootLayout({
