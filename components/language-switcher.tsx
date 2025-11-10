@@ -1,33 +1,28 @@
 "use client"
 
-import type { Language } from "@/lib/translations"
+import { useLanguage } from "@/hooks/use-language"
 
-export default function LanguageSwitcher({
-  language,
-  onLanguageChange,
-}: {
-  language: Language
-  onLanguageChange: (lang: Language) => void
-}) {
-  const languages: { code: Language; label: string }[] = [
-    { code: "en", label: "EN" },
-    { code: "ru", label: "RU" },
-    { code: "uz", label: "UZ" },
-  ]
+const languages = [
+  { code: "uz", flag: "🇺🇿", name: "O'zbek" },
+  { code: "en", flag: "🇬🇧", name: "English" },
+  { code: "ru", flag: "🇷🇺", name: "Русский" },
+]
+
+export default function LanguageSwitcher() {
+  const { language, setLanguage } = useLanguage()
 
   return (
-    <div className="flex gap-2 bg-primary-foreground/20 rounded-lg p-1">
+    <div className="flex gap-2">
       {languages.map((lang) => (
         <button
           key={lang.code}
-          onClick={() => onLanguageChange(lang.code)}
-          className={`px-4 py-1 rounded font-semibold transition-all ${
-            language === lang.code
-              ? "bg-primary-foreground text-primary"
-              : "text-primary-foreground hover:bg-primary-foreground/20"
+          onClick={() => setLanguage(lang.code as any)}
+          className={`px-3 py-2 rounded-lg font-semibold transition ${
+            language === lang.code ? "bg-blue-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"
           }`}
+          title={lang.name}
         >
-          {lang.label}
+          {lang.flag}
         </button>
       ))}
     </div>
