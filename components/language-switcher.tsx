@@ -4,7 +4,7 @@ import { useLanguage } from "@/hooks/use-language"
 
 const languages = [
   { code: "uz", flag: "🇺🇿", name: "O'zbek" },
-  { code: "en", flag: "🇬🇧", name: "English" },
+  { code: "en", flag: "EN", name: "English" },
   { code: "ru", flag: "🇷🇺", name: "Русский" },
 ]
 
