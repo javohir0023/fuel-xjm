@@ -1,6 +1,6 @@
-import { generateText } from 'ai'
-
 export const maxDuration = 30
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
 // System prompt with Khorezm places context
 const systemPrompt = `You are RealRate AI, a friendly support assistant for users in the Khorezm region, Uzbekistan.
@@ -72,19 +72,39 @@ export async function POST(req: Request) {
     const body = await req.json()
     const userMessages = body.messages || []
 
-    // Convert to AI SDK format
-    const formattedMessages = userMessages.map((m: { role: string; content: string }) => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.content
-    }))
+    // Build messages array for OpenAI
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...userMessages.map((m: { role: string; content: string }) => ({
+        role: m.role,
+        content: m.content
+      }))
+    ]
 
-    const result = await generateText({
-      model: 'openai/gpt-4o-mini',
-      system: systemPrompt,
-      messages: formattedMessages,
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages,
+        max_tokens: 1024,
+        temperature: 0.7,
+      }),
     })
 
-    return Response.json({ text: result.text })
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('OpenAI API error:', error)
+      return Response.json({ error: 'Failed to generate response' }, { status: 500 })
+    }
+
+    const data = await response.json()
+    const text = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.'
+
+    return Response.json({ text })
   } catch (error) {
     console.error('Chat API error:', error)
     return Response.json({ error: 'Failed to generate response' }, { status: 500 })
